@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DSharpPlus" Version="3.2.3" />
+      <PackageReference Include="Reddit" Version="1.2.0" />
+      <PackageReference Include="Reddit.AuthTokenRetrieverLib" Version="1.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="src\Commands\Reminder" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="src\Commands\Questions\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="src\Commands\Questions\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="src\Commands\Questions\**" />
+      <None Remove="src\Resources\reddit_bot_id" />
+    </ItemGroup>
+
+</Project>
