@@ -19,9 +19,9 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
             this.MessageEvent = messageEvent;
         }
         
-        public async Task Reply(string message)
+        public async Task<DiscordMessage> Reply(string message)
         {
-            await MessageEvent.Channel.SendMessageAsync(message);
+            return await MessageEvent.Channel.SendMessageAsync(message);
         }
     }
 }

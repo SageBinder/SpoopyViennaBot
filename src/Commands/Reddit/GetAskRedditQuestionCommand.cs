@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Reddit;
 using SpoopyViennaBot.Utils.CommandsMeta;
 using Reddit.Inputs;
 
@@ -17,22 +18,29 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         public override async Task Invoke(CommandContext context)
         {
-            var reddit = Reddit.GetApi();
+            RedditAPI reddit;
+            if(!await Reddit.ApiIsEstablished())
+            {
+                await context.Reply("It appears the connection to the Reddit API has failed... Attempting to reestablish");
+                reddit = await Reddit.EstablishApiAndGet();
+            }
+            else
+            {
+                reddit = Reddit.GetApi();
+            }
+
             if(reddit == null)
             {
-                await context.Reply("Error: A connection to the Reddit API has not yet established. Now attempting to establish...");
-                reddit = await Reddit.EstablishApiAndGet();
+                await context.Reply("Error: a connection to the Reddit API could not be established.");
+                return;
             }
             
             var askReddit = reddit.Subreddit("AskReddit").About();
             var latestPost = askReddit.Posts.GetNew(new CategorizedSrListingInput(count: 1)).First();
             await context.Reply(
-                string.Format("{0} ({1} upvote{2}, {3} downvote{4})",
-                    latestPost.Title,
-                    latestPost.UpVotes,
-                    latestPost.UpVotes != 1 ? "s" : "",
-                    latestPost.DownVotes,
-                    latestPost.DownVotes != 1 ? "s" : ""));
+                $"r/AskReddit: *\"{latestPost.Title}\"*\n" +
+                $"({latestPost.UpVotes} upvote{(latestPost.UpVotes != 1 ? "s" : "")}, " +
+                $"{latestPost.DownVotes} downvote{(latestPost.DownVotes != 1 ? "s" : "")})");
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using SpoopyViennaBot.Utils.CommandsMeta;
@@ -13,15 +13,16 @@ namespace SpoopyViennaBot.Main
     {
         private static DiscordClient _botClient;
         private static List<Command> _commands;
+        public static DateTime botCreateTime;
 
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            MainASync(args).ConfigureAwait(false).GetAwaiter().GetResult();
-        }
-
-        private static async Task MainASync(string[] args)
-        {
-            Commands.Reddit.Reddit.EstablishApi();
+            botCreateTime = DateTime.UtcNow;
+            
+            var redditApiTimer = new Timer(state => { Commands.Reddit.Reddit.EstablishApi(); },
+                null,
+                new TimeSpan(0, 0, 0),
+                new TimeSpan(0, 50, 0));
             
             _commands = CommandsInitializer.GetCommands();
             _botClient = new DiscordClient(new DiscordConfiguration

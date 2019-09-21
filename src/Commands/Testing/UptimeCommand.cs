@@ -21,13 +21,12 @@ namespace SpoopyViennaBot.Commands.Testing
 
         public override async Task Invoke(CommandContext context)
         {
-            await context.Reply(FormatTimeSpan(DateTime.UtcNow - _startDate).ToString("")
-                                + " (since " + DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss") + "Z)");
-        }
-
-        private static TimeSpan FormatTimeSpan(TimeSpan timeSpan)
-        {
-            return new TimeSpan(timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+            var uptimeTimeSpan = DateTime.UtcNow - _startDate;
+            await context.Reply($"{uptimeTimeSpan.Days} days, " + 
+                                $"{uptimeTimeSpan.Hours} hours, " +
+                                $"{uptimeTimeSpan.Minutes} minutes, " +
+                                $"{uptimeTimeSpan.Seconds} seconds " +
+                                $"(since {_startDate:yyyy-MM-dd hh:mm:ss}Z)");
         }
     }
 }
