@@ -16,20 +16,5 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
             await Invoke(context);
             return true;
         }
-        
-        public static bool MessageMatchesTriggerList(string message,
-            string[] triggers,
-            string delimRegex = @"[\s+]",
-            bool caseSensitive = false,
-            bool canTakeArguments = true)
-        {
-            string[] splitMessage = Regex.Split(caseSensitive ? message : message.ToLower(), delimRegex);
-            if(splitMessage.Length < triggers.Length || (!canTakeArguments && splitMessage.Length > triggers.Length))
-            {
-                return false;
-            }
-
-            return !triggers.Where((word, i) => !(caseSensitive ? word : word.ToLower()).Equals(splitMessage[i])).Any();
-        }
     }
 }

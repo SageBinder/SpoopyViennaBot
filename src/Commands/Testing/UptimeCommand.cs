@@ -9,15 +9,10 @@ namespace SpoopyViennaBot.Commands.Testing
         private readonly DateTime _startDate;
         private const string Trigger = "!uptime";
 
-        public UptimeCommand(DateTime startDate)
-        {
-            _startDate = startDate;
-        }
-        
-        public override bool IsTriggeredByMessage(CommandContext context)
-        {
-            return MessageMatchesTriggerList(context.Message, new[] {Trigger}, canTakeArguments: false);
-        }
+        public UptimeCommand(DateTime startDate) => _startDate = startDate;
+
+        public override bool IsTriggeredByMessage(CommandContext context) =>
+            context.SatisfiesTriggers(new[] {Trigger}, canTakeArguments: false);
 
         public override async Task Invoke(CommandContext context)
         {

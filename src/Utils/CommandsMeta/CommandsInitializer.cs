@@ -15,9 +15,11 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
             // Testing
             commands.Add(new TestPingCommand());
             commands.Add(new IncrementCommand());
-            commands.Add(new UptimeCommand(BotMain.botCreateTime));
+            commands.Add(new UptimeCommand(BotMain.BotCreateTime));
             
             // Reddit
+            commands.Add(new RedditBaseCommand());
+            commands.Add(new GetPostCommand());
             commands.Add(new GetAskRedditQuestionCommand());
             commands.Add(new ForceInitRedditApiCommand());
             commands.Add(new RedditApiStatusCommand());

@@ -8,20 +8,18 @@ namespace SpoopyViennaBot.Commands.Reddit
     public class ForceInitRedditApiCommand : Command
     {
         private const string Trigger = "forceinit";
-        
-        public override bool IsTriggeredByMessage(CommandContext context)
-        {
-            return MessageMatchesTriggerList(context.Message,
-                new[] {Reddit.BaseTriggerString, Trigger});
-        }
+        private static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
+
+        public override bool IsTriggeredByMessage(CommandContext context) =>
+            context.SatisfiesTriggers(Triggers, canTakeArguments: false);
 
         public override async Task Invoke(CommandContext context)
         {
             var initialMessage = "Attempting to establish Reddit API, ";
-            string[] splitMessage = Regex.Split(context.Message, @"[\s+]");
+            string[] splitMessage = Regex.Split(context.MessageString, @"[\s+]");
             if(!(splitMessage.Length > 2 && int.TryParse(splitMessage[2], out var timeout)))
             {
-                timeout = Reddit.defaultTimeout;
+                timeout = Reddit.DefaultTimeout;
             }
 
             initialMessage += $"timeout={timeout}ms...";

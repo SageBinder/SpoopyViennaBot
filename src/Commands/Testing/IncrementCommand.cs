@@ -8,10 +8,8 @@ namespace SpoopyViennaBot.Commands.Testing
     {
         private const string Trigger = "!inc";
         private int _val;
-        public override bool IsTriggeredByMessage(CommandContext context)
-        {
-            return MessageMatchesTriggerList(context.Message, new[] {Trigger});
-        }
+        public override bool IsTriggeredByMessage(CommandContext context) =>
+            context.SatisfiesTriggers(new[] {Trigger});
 
         public override async Task Invoke(CommandContext context)
         {

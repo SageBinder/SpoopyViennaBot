@@ -13,11 +13,11 @@ namespace SpoopyViennaBot.Main
     {
         private static DiscordClient _botClient;
         private static List<Command> _commands;
-        public static DateTime botCreateTime;
+        public static DateTime BotCreateTime;
 
         private static async Task Main(string[] args)
         {
-            botCreateTime = DateTime.UtcNow;
+            BotCreateTime = DateTime.UtcNow;
             
             var redditApiTimer = new Timer(state => { Commands.Reddit.Reddit.EstablishApi(); },
                 null,

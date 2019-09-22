@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Reddit;
 using RestSharp;
@@ -11,129 +10,59 @@ namespace SpoopyViennaBot.Commands.Reddit
 {
     internal static class Reddit
     {
-        internal const string BaseTriggerString = "!reddit";
+        internal const int DefaultTimeout = 5000;
 
-        internal const int defaultTimeout = 5000;
+        public static RedditAPI Api { get; private set; }
 
-        private static RedditAPI _api;
-        private static string lastAccessToken = ""; // Locked with ApiLockObj
         private const string UserAgent = "SpoopyViennaBot Reddit Access by u/SaggiSponge";
-
-        private static readonly object EstablishingApiFlagLockObj = new object();
-        private static readonly object ApiLockObj = new object();
 
         private static bool _establishingApiFlag;
         private static Task<bool> _establishApiTask;
 
-        internal static async Task<bool> ApiIsEstablished(int timeout = defaultTimeout)
+        internal static bool ApiIsEstablished()
         {
-            Task<IRestResponse> requestTask;
-
-            lock(ApiLockObj)
+            if(Api == null)
             {
-                if(_api == null)
-                {
-                    return false;
-                }
-
-                // Execute a GET request for api/v1/me/friends.
-                // If Reddit returns HTML, it means the access token is INVALID.
-                // If Reddit returns a JSON, it means the access token is VALID.
-                // (This seems like a shitty way to check if the access token is valid...)
-                var restClient = new RestClient("https://oauth.reddit.com")
-                {
-                    Timeout = timeout
-                };
-                var restRequest = new RestRequest("/api/v1/me/friends", Method.GET);
-                restRequest.AddHeader("Authorization", $"bearer {lastAccessToken}");
-                
-                requestTask = restClient.ExecuteGetTaskAsync(restRequest);
+                return false;
             }
 
             try
             {
-                await requestTask;
-                
-                // We check if the request result is a JSON by simply attempting to parse it.
-                // This will throw an exception if it's not a valid JSON.
-                JObject.Parse(requestTask.Result.Content);
+                // To determine whether or not the access token is valid, try to access AskReddit.
+                // The framework will throw an exception if it can't access it
+                Api.Subreddit("AskReddit").About();
+
+                return true;
             }
-            catch(JsonReaderException e)
+            catch(Exception e)
             {
-                Console.WriteLine("\n/api/v1/me/friends GET did not return a Json. " +
-                                  "That means the Reddit access token must be invalid!");
+                Console.WriteLine($"_api.Subreddit(\"AskReddit\").About(); threw an exception! ({DateTime.UtcNow})");
                 Console.WriteLine(e.Message);
                 
                 return false;
             }
-
-            return true;
         }
 
-        internal static RedditAPI GetApi()
-        {
-            lock(ApiLockObj)
-            {
-                return _api;
-            }
-        }
-
-        internal static async Task<RedditAPI> EstablishApiAndGet(int timeout = defaultTimeout)
+        internal static async Task<RedditAPI> EstablishApiAndGet(int timeout = DefaultTimeout)
         {
             await EstablishApi(timeout);
-            lock(ApiLockObj)
-            {
-                return _api;
-            }
+            return Api;
         }
 
-        internal static async Task<RedditAPI> EstablishApiIfNecessaryAndGet(int timeout = defaultTimeout)
+        internal static async Task<RedditAPI> EstablishApiIfNecessaryAndGet(int timeout = DefaultTimeout) =>
+            ApiIsEstablished() ? Api : await EstablishApiAndGet(timeout);
+
+        internal static async Task<bool> EstablishApi(int timeout = DefaultTimeout)
         {
-            Task<bool> apiIsEstablished;
-            bool apiIsBeingEstablished;
+            if(_establishingApiFlag) return await _establishApiTask;
 
-            lock(EstablishingApiFlagLockObj)
-            {
-                apiIsEstablished = ApiIsEstablished(timeout);
-                apiIsBeingEstablished = _establishingApiFlag;
-            }
-
-            if(!await apiIsEstablished && apiIsBeingEstablished)
-            {
-                await _establishApiTask;
-                lock(ApiLockObj)
-                {
-                    return _api;
-                }
-            }
-
-            if(!await apiIsEstablished)
-            {
-                return await EstablishApiAndGet(timeout);
-            }
-
-            lock(ApiLockObj)
-            {
-                return _api;
-            }
-        }
-
-        internal static async Task<bool> EstablishApi(int timeout = defaultTimeout)
-        {
-            lock(EstablishingApiFlagLockObj)
-            {
-                if(!_establishingApiFlag)
-                {
-                    _establishingApiFlag = true;
-                    _establishApiTask = _EstablishApi(timeout);
-                }
-            }
-
+            _establishApiTask = _EstablishApi(timeout);
             return await _establishApiTask;
         }
 
-        private static async Task<bool> _EstablishApi(int timeout = defaultTimeout)
+        private static async Task<bool> _EstablishApi(int timeout = DefaultTimeout)
         {
+            _establishingApiFlag = true;
             Console.WriteLine($"\nObtaining access token from reddit (timeout={timeout}ms)... ({DateTime.UtcNow})");
 
             var redditUsername = File.ReadAllText("../../../src/Resources/reddit_username.txt");
@@ -153,7 +82,7 @@ namespace SpoopyViennaBot.Commands.Reddit
             restRequest.AddParameter("password", redditPassword);
 
             IRestResponse restResponse = await restClient.ExecutePostTaskAsync(restRequest);
-            
+
             string accessToken;
             try
             {
@@ -166,31 +95,16 @@ namespace SpoopyViennaBot.Commands.Reddit
                                   "Received response from https://www.reddit.com/api/v1/access_token:");
                 Console.WriteLine(restResponse.Content);
 
-                lock(ApiLockObj)
-                {
-                    lastAccessToken = "";
-                    _api = null;
-                }
-
-                lock(EstablishingApiFlagLockObj)
-                {
-                    _establishingApiFlag = false;
-                }
+                Api = null;
+                _establishingApiFlag = false;
 
                 return false;
             }
 
             Console.WriteLine("Reddit access token successfully obtained!");
-            lock(ApiLockObj)
-            {
-                lastAccessToken = accessToken;
-                _api = new RedditAPI(appId, appSecret: appSecret, accessToken: accessToken);
-            }
 
-            lock(EstablishingApiFlagLockObj)
-            {
-                _establishingApiFlag = false;
-            }
+            Api = new RedditAPI(appId, appSecret: appSecret, accessToken: accessToken);
+            _establishingApiFlag = false;
 
             return true;
         }
