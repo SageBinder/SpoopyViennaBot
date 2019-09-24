@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SpoopyViennaBot.Utils.CommandsMeta;
 
@@ -9,6 +7,15 @@ namespace SpoopyViennaBot.Commands.Random
     public class RollCommand : Command
     {
         private const string Trigger = "!roll";
+        private const string UsageString = @"
+Usage examples:
+`!roll 20`
+`!roll 2d20`
+`!roll 6+5`
+`!roll 2d6+10`
+`!roll d24-13`
+";
+
         private static readonly System.Random Random = new System.Random();
         
         public override bool IsTriggeredByMessage(CommandContext context) =>
@@ -17,6 +24,12 @@ namespace SpoopyViennaBot.Commands.Random
         public override async Task Invoke(CommandContext context)
         {
             var args = context.GetSequentialArgs(1);
+            if(args.Length == 0)
+            {
+                await context.Reply(UsageString);
+                return;
+            }
+            
             var messageString = "```diff\n";
             var totalRoll = 0;
             
@@ -35,7 +48,12 @@ namespace SpoopyViennaBot.Commands.Random
                 }
 
                 totalRoll += sum;
-                messageString += $"+ {rollArg.NumDie}d{rollArg.DieValue}{(rollArg.Offset > 0 ? $"+{rollArg.Offset}" : "")}: {sum}\n";
+
+                var offsetString =
+                    rollArg.Offset > 0 ? $"+{rollArg.Offset}" :
+                    rollArg.Offset < 0 ? $"{rollArg.Offset}" :
+                    "";
+                messageString += $"+ {rollArg.NumDie}d{rollArg.DieValue}{offsetString}: {sum}\n";
             }
 
             if(args.Length > 1)
@@ -48,11 +66,11 @@ namespace SpoopyViennaBot.Commands.Random
         
         private static bool TryParseRollArg(string arg, out RollArg output)
         {
-            // TODO: Implement negative offset
-            var match = Regex.Match(arg, @"(?:([0-9]*)d)?([0-9]+)(?:\+([0-9]+))*");
+            var match = Regex.Match(arg, @"(?:([0-9]*)d)?([0-9]+)(?:([\-\+])([0-9]+))?");
             int numDie = int.TryParse(match.Groups[1].ToString(), out numDie) ? numDie : 1;
             int dieValue = int.TryParse(match.Groups[2].ToString(), out dieValue) ? dieValue : 20;
-            int offset = int.TryParse(match.Groups[3].ToString(), out offset) ? offset : 0;
+            int offset = int.TryParse(match.Groups[4].ToString(), out offset) ? offset : 0;
+            offset = match.Groups[3].Value.Equals("-") ? offset * -1 : offset;
 
             output = new RollArg(numDie, dieValue, offset);
             return match.Success;
