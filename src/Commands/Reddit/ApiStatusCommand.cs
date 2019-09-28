@@ -5,8 +5,8 @@ namespace SpoopyViennaBot.Commands.Reddit
 {
     public class RedditApiStatusCommand : Command
     {
-        private const string Trigger = "status";
-        private static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
+        internal const string Trigger = "status";
+        internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
         
         public override bool IsTriggeredByMessage(CommandContext context) =>
             context.SatisfiesTriggers(Triggers, canTakeArguments: false);

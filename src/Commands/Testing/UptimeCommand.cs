@@ -6,8 +6,8 @@ namespace SpoopyViennaBot.Commands.Testing
 {
     public class UptimeCommand : Command
     {
+        internal const string Trigger = "!uptime";
         private readonly DateTime _startDate;
-        private const string Trigger = "!uptime";
 
         public UptimeCommand(DateTime startDate) => _startDate = startDate;
 

@@ -7,8 +7,8 @@ namespace SpoopyViennaBot.Commands.Reddit
 {
     public class ForceInitRedditApiCommand : Command
     {
-        private const string Trigger = "forceinit";
-        private static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
+        internal const string Trigger = "forceinit";
+        internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
 
         public override bool IsTriggeredByMessage(CommandContext context) =>
             context.SatisfiesTriggers(Triggers, canTakeArguments: false);

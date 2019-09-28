@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SpoopyViennaBot.Utils.CommandsMeta;
 
@@ -6,7 +7,7 @@ namespace SpoopyViennaBot.Commands.Random
 {
     public class RollCommand : Command
     {
-        private const string Trigger = "!roll";
+        internal const string Trigger = "!roll";
         private const string UsageString = @"
 Usage examples:
 `!roll 20`
@@ -31,7 +32,7 @@ Usage examples:
             }
             
             var messageString = "```diff\n";
-            var totalRoll = 0;
+            long totalRoll = 0;
             
             foreach(var arg in args)
             {
@@ -41,10 +42,10 @@ Usage examples:
                     continue;
                 }
 
-                var sum = rollArg.Offset;
+                long sum = rollArg.Offset;
                 for(var i = 0; i < rollArg.NumDie; i++)
                 {
-                    sum += Random.Next(rollArg.DieValue) + 1;
+                    sum += Random.Next(rollArg.DieValue + 0) + 1;
                 }
 
                 totalRoll += sum;
@@ -63,26 +64,27 @@ Usage examples:
             messageString += "```";
             await context.Reply(messageString);
         }
-        
+
         private static bool TryParseRollArg(string arg, out RollArg output)
         {
+            // Matches something like "(2d)20(+5)"
             var match = Regex.Match(arg, @"(?:([0-9]*)d)?([0-9]+)(?:([\-\+])([0-9]+))?");
-            int numDie = int.TryParse(match.Groups[1].ToString(), out numDie) ? numDie : 1;
-            int dieValue = int.TryParse(match.Groups[2].ToString(), out dieValue) ? dieValue : 20;
-            int offset = int.TryParse(match.Groups[4].ToString(), out offset) ? offset : 0;
-            offset = match.Groups[3].Value.Equals("-") ? offset * -1 : offset;
+            short numDie = short.TryParse(match.Groups[1].ToString(), out numDie) ? numDie : (short)1;
+            short dieValue = short.TryParse(match.Groups[2].ToString(), out dieValue) ? dieValue : (short)20;
+            short offset = short.TryParse(match.Groups[4].ToString(), out offset) ? offset : (short)0;
+            offset = (short)(match.Groups[3].Value.Equals("-") ? offset * (-1) : offset);
 
             output = new RollArg(numDie, dieValue, offset);
             return match.Success;
         }
-        
+
         private class RollArg
         {
-            internal int NumDie { get; }
-            internal int DieValue { get; }
-            internal int Offset { get;  }
+            internal short NumDie { get; }
+            internal short DieValue { get; }
+            internal short Offset { get; }
             
-            internal RollArg(int numDie, int dieValue, int offset = 0)
+            internal RollArg(short numDie, short dieValue, short offset = 0)
             {
                 NumDie = numDie;
                 DieValue = dieValue;

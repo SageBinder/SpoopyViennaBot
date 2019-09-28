@@ -6,7 +6,7 @@ namespace SpoopyViennaBot.Commands.Testing
 {
     public class IncrementCommand : Command
     {
-        private const string Trigger = "!inc";
+        internal const string Trigger = "!inc";
         private int _val;
         public override bool IsTriggeredByMessage(CommandContext context) =>
             context.SatisfiesTriggers(new[] {Trigger});

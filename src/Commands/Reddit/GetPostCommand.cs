@@ -11,8 +11,8 @@ namespace SpoopyViennaBot.Commands.Reddit
 {
     public class GetPostCommand : Command
     {
-        private const string Trigger = "get";
-        private static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
+        internal const string Trigger = "get";
+        internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
 
         public override bool IsTriggeredByMessage(CommandContext context) => context.SatisfiesTriggers(Triggers);
 
@@ -26,7 +26,7 @@ namespace SpoopyViennaBot.Commands.Reddit
         {
             if(args.Length == 0)
             {
-                await context.Reply("Error: no arguments provided. Usage: `!reddit get <subreddit> [feed_type]`");
+                await context.Reply($"Error: no arguments provided. Usage: `{Triggers[0]} {Triggers[1]} <subreddit> [feed_type]`");
                 return;
             }
 

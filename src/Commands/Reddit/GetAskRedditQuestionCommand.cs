@@ -5,8 +5,8 @@ namespace SpoopyViennaBot.Commands.Reddit
 {
     public class GetAskRedditQuestionCommand : Command
     {
-        private const string Trigger = "question";
-        private static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
+        internal const string Trigger = "question";
+        internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
 
         public override bool IsTriggeredByMessage(CommandContext context) =>
             context.SatisfiesTriggers(Triggers);

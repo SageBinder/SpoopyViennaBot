@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SpoopyViennaBot.Commands.Ephemeral;
 using SpoopyViennaBot.Commands.Random;
 using SpoopyViennaBot.Commands.Reddit;
 using SpoopyViennaBot.Commands.Testing;
@@ -9,7 +10,7 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
 {
     public static class CommandsInitializer
     {
-        public static List<Command> GetCommands()
+        public static CommandList GetCommandList()
         {
             var commands = new List<Command>();
             
@@ -27,8 +28,15 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
             
             // Random
             commands.Add(new RollCommand());
+            commands.Add(new TossCommand());
             
-            return commands;
+            // Ephemeral (I KNOW IT'S BAD, BUT ORDER MATTERS HERE!!)
+            commands.Add(new EphemeralBaseCommand());
+            commands.Add(new DisableEphemeralCommand());
+            commands.Add(new EphemeralDeleter());
+            commands.Add(new EnableEphemeralCommand());
+
+            return new CommandList(commands);
         }
     }
 }
