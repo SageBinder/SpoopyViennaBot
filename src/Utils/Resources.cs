@@ -1,12 +1,14 @@
 ﻿using System.IO;
+using System.Reflection;
 
 namespace SpoopyViennaBot.Utils
 {
     public static class Resources
     {
-        public const string ResourcesPath = "../../../src/Resources/";
+        public static readonly string ResourcesPath =
+            Path.Combine(new[] {Directory.GetCurrentDirectory(), "../../../src/Resources/"});
 
-        public static string ReadAllTest(string resourceName)
+        public static string ReadAllText(string resourceName)
         {
             return File.ReadAllText($"{ResourcesPath}{resourceName}");
         }

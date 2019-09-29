@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
+using SpoopyViennaBot.Utils;
 using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Main
@@ -27,7 +28,7 @@ namespace SpoopyViennaBot.Main
             _commands = CommandsInitializer.GetCommandList();
             _botClient = new DiscordClient(new DiscordConfiguration
             {
-                Token = File.ReadAllText("../../../src/Resources/discord_token.txt"),
+                Token = Resources.ReadAllText("discord_token.txt"),
                 TokenType = TokenType.Bot
             });
 
