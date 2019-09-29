@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 
 namespace SpoopyViennaBot.Utils
@@ -6,7 +7,7 @@ namespace SpoopyViennaBot.Utils
     public static class Resources
     {
         public static readonly string ResourcesPath =
-            Path.Combine(new[] {Directory.GetCurrentDirectory(), "../../../src/Resources/"});
+            Path.Combine(new[] {AppDomain.CurrentDomain.BaseDirectory, "../../../src/Resources/"});
 
         public static string ReadAllText(string resourceName)
         {
