@@ -5,14 +5,21 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Ephemeral
 {
-    public class EphemeralBaseCommand : Command
+    internal class EphemeralBaseCommand : Command
     {
         internal const string BaseTrigger = "!ephemeral";
 
-        public override bool IsTriggeredByMessage(CommandContext context) =>
+        internal readonly EphemeralContext EphemeralContext;
+        
+        internal EphemeralBaseCommand(EphemeralContext ephemeralContext)
+        {
+            this.EphemeralContext = ephemeralContext;
+        }
+
+        protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(new[] {BaseTrigger}, canTakeArguments: false);
 
-        public override async Task Invoke(CommandContext context)
+        protected override async Task _Invoke(MessageContext context)
         {
             DiscordChannel channel = context.MessageEvent.Channel;
             ulong id = channel.Id;

@@ -10,9 +10,9 @@ namespace SpoopyViennaBot.Commands.Random
 
         private static readonly System.Random Random = new System.Random();
 
-        public override bool IsTriggeredByMessage(CommandContext context) => context.SatisfiesTriggers(new[] {Trigger});
+        protected override bool IsTriggeredByMessage(MessageContext context) => context.SatisfiesTriggers(new[] {Trigger});
 
-        public override async Task Invoke(CommandContext context)
+        protected override async Task _Invoke(MessageContext context)
         {
             var args = context.GetSequentialArgs(1);
             short numTosses = args.Length > 0 && short.TryParse(args[0], out numTosses) ? numTosses : (short)1;

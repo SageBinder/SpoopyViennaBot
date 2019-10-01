@@ -4,15 +4,28 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Ephemeral
 {
-    public class EphemeralDeleter : Command
+    internal class EphemeralDeleter : Command
     {
-        public override bool IsTriggeredByMessage(CommandContext context)
+        private readonly EphemeralContext _ephemeralContext;
+        
+        internal EphemeralDeleter(EphemeralContext ephemeralContext)
+        {
+            _ephemeralContext = ephemeralContext;
+        }
+
+        protected override bool IsTriggeredByMessage(MessageContext context)
         {
             return EphemeralData.ContainsId(context.MessageEvent.Channel.Id);
         }
 
-        public override async Task Invoke(CommandContext context)
+        protected override async Task _Invoke(MessageContext context)
         {
+            if(_ephemeralContext.NoDeleteMessageIdSet.Contains(context.MessageEvent.Message.Id))
+            {
+                _ephemeralContext.NoDeleteMessageIdSet.Remove(context.MessageEvent.Message.Id);
+                return;
+            }
+            
             var channelId = context.MessageEvent.Channel.Id;
             if(EphemeralData.Get(channelId) == 0)
             {

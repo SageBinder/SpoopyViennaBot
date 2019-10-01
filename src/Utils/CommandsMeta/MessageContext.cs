@@ -7,7 +7,7 @@ using DSharpPlus.EventArgs;
 
 namespace SpoopyViennaBot.Utils.CommandsMeta
 {
-    public class CommandContext
+    public class MessageContext
     {
         public readonly DiscordClient BotClient;
         public readonly MessageCreateEventArgs MessageEvent;
@@ -15,7 +15,7 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
         public string MessageString => MessageEvent.Message.Content;
         public DiscordUser Author => MessageEvent.Author;
 
-        public CommandContext(DiscordClient botClient, MessageCreateEventArgs messageEvent)
+        public MessageContext(DiscordClient botClient, MessageCreateEventArgs messageEvent)
         {
             BotClient = botClient;
             MessageEvent = messageEvent;

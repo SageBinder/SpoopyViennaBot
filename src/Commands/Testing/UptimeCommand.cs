@@ -11,10 +11,10 @@ namespace SpoopyViennaBot.Commands.Testing
 
         public UptimeCommand(DateTime startDate) => _startDate = startDate;
 
-        public override bool IsTriggeredByMessage(CommandContext context) =>
+        protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(new[] {Trigger}, canTakeArguments: false);
 
-        public override async Task Invoke(CommandContext context)
+        protected override async Task _Invoke(MessageContext context)
         {
             var uptimeTimeSpan = DateTime.UtcNow - _startDate;
             await context.Reply($"{uptimeTimeSpan.Days} days, " + 

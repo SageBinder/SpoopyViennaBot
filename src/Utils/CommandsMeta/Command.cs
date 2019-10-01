@@ -4,17 +4,15 @@ using System.Threading.Tasks;
 
 namespace SpoopyViennaBot.Utils.CommandsMeta
 {
-    public abstract class Command
+    public abstract class Command : IInvokableMessageActor
     {
-        public abstract bool IsTriggeredByMessage(CommandContext context);
+        protected abstract bool IsTriggeredByMessage(MessageContext context);
 
-        public abstract Task Invoke(CommandContext context);
-
-        public async Task<bool> InvokeIfMessageTriggers(CommandContext context)
+        public async Task Invoke(MessageContext context)
         {
-            if(!IsTriggeredByMessage(context)) return false;
-            await Invoke(context);
-            return true;
+            if(IsTriggeredByMessage(context)) await _Invoke(context);
         }
+
+        protected abstract Task _Invoke(MessageContext context);
     }
 }

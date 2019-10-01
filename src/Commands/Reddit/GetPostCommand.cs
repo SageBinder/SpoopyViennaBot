@@ -9,20 +9,20 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    public class GetPostCommand : Command
+    internal class GetPostCommand : Command
     {
         internal const string Trigger = "get";
         internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
 
-        public override bool IsTriggeredByMessage(CommandContext context) => context.SatisfiesTriggers(Triggers);
+        protected override bool IsTriggeredByMessage(MessageContext context) => context.SatisfiesTriggers(Triggers);
 
-        public override async Task Invoke(CommandContext context)
+        protected override async Task _Invoke(MessageContext context)
         {
             var commandArgs = context.GetSequentialArgs(Triggers.Length);
             await _invoke(context, commandArgs);
         }
 
-        internal static async Task _invoke(CommandContext context, string[] args)
+        internal static async Task _invoke(MessageContext context, string[] args)
         {
             if(args.Length == 0)
             {

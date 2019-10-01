@@ -3,15 +3,15 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    public class GetAskRedditQuestionCommand : Command
+    internal class GetAskRedditQuestionCommand : Command
     {
         internal const string Trigger = "question";
         internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
 
-        public override bool IsTriggeredByMessage(CommandContext context) =>
+        protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(Triggers);
 
-        public override async Task Invoke(CommandContext context)
+        protected override async Task _Invoke(MessageContext context)
         {
             await GetPostCommand._invoke(context, new[] {"AskReddit"});
         }

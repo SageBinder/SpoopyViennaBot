@@ -8,10 +8,11 @@ namespace SpoopyViennaBot.Commands.Testing
     {
         internal const string Trigger = "!inc";
         private int _val;
-        public override bool IsTriggeredByMessage(CommandContext context) =>
+
+        protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(new[] {Trigger});
 
-        public override async Task Invoke(CommandContext context)
+        protected override async Task _Invoke(MessageContext context)
         {
             int oldVal = _val;
             string[] splitMessage = Regex.Split(context.MessageEvent.Message.Content, @"[\s+]");

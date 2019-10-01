@@ -7,30 +7,30 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DSharpPlus" Version="3.2.3"/>
-        <PackageReference Include="Reddit" Version="1.2.0"/>
-        <PackageReference Include="Reddit.AuthTokenRetrieverLib" Version="1.2.0"/>
+        <PackageReference Include="DSharpPlus" Version="3.2.3" />
+        <PackageReference Include="Reddit" Version="1.2.0" />
+        <PackageReference Include="Reddit.AuthTokenRetrieverLib" Version="1.2.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="src\Commands\Reminder"/>
+        <Folder Include="src\Commands\Reminder" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="src\Commands\Questions\**"/>
+        <Compile Remove="src\Commands\Questions\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Remove="src\Commands\Questions\**"/>
+        <EmbeddedResource Remove="src\Commands\Questions\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="src\Commands\Questions\**"/>
-        <None Remove="src\Resources\reddit_bot_id"/>
+        <None Remove="src\Commands\Questions\**" />
+        <None Remove="src\Resources\reddit_bot_id" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="app.yaml" CopyToOutputDirectory="PreserveNewest"/>
+        <None Include="app.yaml" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>

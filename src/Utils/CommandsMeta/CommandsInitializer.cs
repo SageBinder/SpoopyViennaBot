@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SpoopyViennaBot.Commands.Ephemeral;
 using SpoopyViennaBot.Commands.Random;
 using SpoopyViennaBot.Commands.Reddit;
@@ -10,9 +9,9 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
 {
     public static class CommandsInitializer
     {
-        public static CommandList GetCommandList()
+        public static InvokableList GetCommandList()
         {
-            var commands = new List<Command>();
+            var commands = new List<IInvokableMessageActor>();
             
             // Testing
             commands.Add(new TestPingCommand());
@@ -20,23 +19,16 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
             commands.Add(new UptimeCommand(BotMain.BotCreateTime));
             
             // Reddit
-            commands.Add(new RedditBaseCommand());
-            commands.Add(new GetPostCommand());
-            commands.Add(new GetAskRedditQuestionCommand());
-            commands.Add(new ForceInitRedditApiCommand());
-            commands.Add(new RedditApiStatusCommand());
-            
+            commands.Add(new RedditCommandGroup());
+
             // Random
             commands.Add(new RollCommand());
             commands.Add(new TossCommand());
             
-            // Ephemeral (I KNOW IT'S BAD, BUT ORDER MATTERS HERE!!)
-            commands.Add(new EphemeralBaseCommand());
-            commands.Add(new DisableEphemeralCommand());
-            commands.Add(new EphemeralDeleter());
-            commands.Add(new EnableEphemeralCommand());
+            // Ephemeral
+            commands.Add(new EphemeralCommandGroup());
 
-            return new CommandList(commands);
+            return new InvokableList(commands);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace SpoopyViennaBot.Main
     internal static class BotMain
     {
         private static DiscordClient _botClient;
-        private static CommandList _commands;
+        private static InvokableList _invokables;
         public static DateTime BotCreateTime;
 
         private static async Task Main(string[] args)
@@ -25,14 +25,14 @@ namespace SpoopyViennaBot.Main
             redditApiTimer.AutoReset = true;
             redditApiTimer.Enabled = true;
             
-            _commands = CommandsInitializer.GetCommandList();
+            _invokables = CommandsInitializer.GetCommandList();
             _botClient = new DiscordClient(new DiscordConfiguration
             {
                 Token = Resources.ReadAllText("discord_token.txt"),
                 TokenType = TokenType.Bot
             });
 
-            _botClient.MessageCreated += async e => await _commands.Propagate(new CommandContext(_botClient, e));
+            _botClient.MessageCreated += async e => await _invokables.Propagate(new MessageContext(_botClient, e));
 
             await _botClient.ConnectAsync();
             

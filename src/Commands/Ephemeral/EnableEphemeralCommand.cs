@@ -1,49 +1,60 @@
 ﻿using System.Threading.Tasks;
+using DSharpPlus.Entities;
 using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Ephemeral
 {
-    public class EnableEphemeralCommand : Command
+    internal class EnableEphemeralCommand : EphemeralBaseCommand
     {
         internal const string Trigger = "on";
-        internal readonly string[] Triggers = {EphemeralBaseCommand.BaseTrigger, Trigger};
+        internal readonly string[] Triggers = {BaseTrigger, Trigger};
         
         internal const int DefaultDeleteDelay = 5; // in seconds
         
-        public override bool IsTriggeredByMessage(CommandContext context) => context.SatisfiesTriggers(Triggers);
+        internal EnableEphemeralCommand(EphemeralContext ephemeralContext) : base(ephemeralContext)
+        {
+        }
 
-        public override async Task Invoke(CommandContext context)
+        protected override bool IsTriggeredByMessage(MessageContext context) => context.SatisfiesTriggers(Triggers);
+
+        protected override async Task _Invoke(MessageContext context)
         {
             var args = context.GetSequentialArgs(Triggers.Length);
             int deleteDelay = (args.Length > 0 && int.TryParse(args[0], out deleteDelay))
                 ? deleteDelay
                 : DefaultDeleteDelay;
             
-            ulong channelId = context.MessageEvent.Channel.Id;
-            bool wasEphemeral = EphemeralData.ContainsId(channelId);
+            var messageId = context.MessageEvent.Message.Id;
+            DiscordMessage reply;
+            
+            var channelId = context.MessageEvent.Channel.Id;
+            var wasEphemeral = EphemeralData.ContainsId(channelId);
 
             if(EphemeralData.Put(channelId, deleteDelay))
             {
                 if(wasEphemeral)
                 {
-                    await context.Reply($"Updated this channel's ephemeral delay, now {deleteDelay} seconds.");
+                    reply = await context.Reply($"Updated this channel's ephemeral delay, now {deleteDelay} seconds.");
                 }
                 else
                 {
-                    await context.Reply($"This channel is now ephemeral, delay is {deleteDelay} seconds.");
+                    reply = await context.Reply($"This channel is now ephemeral, delay is {deleteDelay} seconds.");
                 }
             }
             else
             {
                 if(wasEphemeral)
                 {
-                    await context.Reply(":x: Error: could not update this channel's ephemeral delay.");
+                    reply = await context.Reply(":x: Error: could not update this channel's ephemeral delay.");
                 }
                 else
                 {
-                    await context.Reply(":x: Error: could not mark this channel as ephemeral.");
+                    reply = await context.Reply(":x: Error: could not mark this channel as ephemeral.");
                 }
             }
+
+            EphemeralContext.NoDeleteMessageIdSet.Add(messageId);
+            EphemeralContext.NoDeleteMessageIdSet.Add(reply.Id);
         }
     }
 }

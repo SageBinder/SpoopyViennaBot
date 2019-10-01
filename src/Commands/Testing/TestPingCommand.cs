@@ -6,9 +6,9 @@ namespace SpoopyViennaBot.Commands.Testing
 {
     public class TestPingCommand : Command
     {
-        public override bool IsTriggeredByMessage(CommandContext context) =>
+        protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.MessageEvent.MentionedUsers.Contains(context.BotClient.CurrentUser);
 
-        public override async Task Invoke(CommandContext context) => await context.Reply("Hello!");
+        protected override async Task _Invoke(MessageContext context) => await context.Reply("Hello!");
     }
 }

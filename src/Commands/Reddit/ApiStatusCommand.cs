@@ -1,19 +1,20 @@
 ﻿using System.Threading.Tasks;
+using DSharpPlus.Entities;
 using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    public class RedditApiStatusCommand : Command
+    internal class RedditApiStatusCommand : Command
     {
         internal const string Trigger = "status";
         internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
-        
-        public override bool IsTriggeredByMessage(CommandContext context) =>
+
+        protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(Triggers, canTakeArguments: false);
 
-        public override async Task Invoke(CommandContext context)
+        protected override async Task _Invoke(MessageContext context)
         {
-            await context.Reply("Checking reddit API connection status...");
+            DiscordMessage checkingMessage = await context.Reply("Checking reddit API connection status...");
             
             bool apiIsEstablished = Reddit.ApiIsEstablished();
             if(apiIsEstablished)
@@ -24,6 +25,8 @@ namespace SpoopyViennaBot.Commands.Reddit
             {
                 await context.Reply(":x: Error: It appears the connection to the Reddit API is not working");
             }
+
+            await checkingMessage.DeleteAsync();
         }
     }
 }

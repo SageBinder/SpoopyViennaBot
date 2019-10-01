@@ -4,17 +4,17 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    public class RedditBaseCommand : Command
+    internal class RedditBaseCommand : Command
     {
         internal const string BaseTrigger = "!reddit";
-        
-        public override bool IsTriggeredByMessage(CommandContext context) =>
+
+        protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(new[] {BaseTrigger}, canTakeArguments: false);
 
-        public override async Task Invoke(CommandContext context) =>
+        protected override async Task _Invoke(MessageContext context) =>
             await context.Reply("Error: no reddit command specified. (TODO: Write a better error message for this lol)");
 
-        public static async Task<RedditAPI> EstablishApiIfNecessaryAndGet(CommandContext context,
+        public static async Task<RedditAPI> EstablishApiIfNecessaryAndGet(MessageContext context,
             int timeout = Reddit.DefaultTimeout,
             bool displayMessages = true)
         {

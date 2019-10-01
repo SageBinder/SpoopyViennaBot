@@ -5,15 +5,15 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    public class ForceInitRedditApiCommand : Command
+    internal class ForceInitRedditApiCommand : Command
     {
         internal const string Trigger = "forceinit";
         internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
 
-        public override bool IsTriggeredByMessage(CommandContext context) =>
+        protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(Triggers, canTakeArguments: false);
 
-        public override async Task Invoke(CommandContext context)
+        protected override async Task _Invoke(MessageContext context)
         {
             var initialMessage = "Attempting to establish Reddit API, ";
             string[] splitMessage = Regex.Split(context.MessageString, @"[\s+]");
