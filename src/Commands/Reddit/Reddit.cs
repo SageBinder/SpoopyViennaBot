@@ -65,10 +65,10 @@ namespace SpoopyViennaBot.Commands.Reddit
             _establishingApiFlag = true;
             Console.WriteLine($"\nObtaining access token from reddit (timeout={timeout}ms)... ({DateTime.UtcNow})");
 
-            var redditUsername = File.ReadAllText("../../../src/Resources/reddit_username.txt");
-            var redditPassword = File.ReadAllText("../../../src/Resources/reddit_password.txt");
-            var appSecret = File.ReadAllText("../../../src/Resources/reddit_secret.txt");
-            var appId = File.ReadAllText("../../../src/Resources/reddit_app_id.txt");
+            var redditUsername = await File.ReadAllTextAsync("../../../src/Resources/reddit_username.txt").ConfigureAwait(false);
+            var redditPassword = await File.ReadAllTextAsync("../../../src/Resources/reddit_password.txt").ConfigureAwait(false);
+            var appSecret = await File.ReadAllTextAsync("../../../src/Resources/reddit_secret.txt").ConfigureAwait(false);
+            var appId = await File.ReadAllTextAsync("../../../src/Resources/reddit_app_id.txt").ConfigureAwait(false);
 
             var restClient = new RestClient("https://www.reddit.com")
             {
