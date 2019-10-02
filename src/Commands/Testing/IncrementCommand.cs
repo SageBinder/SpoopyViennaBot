@@ -12,13 +12,13 @@ namespace SpoopyViennaBot.Commands.Testing
         protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(new[] {Trigger});
 
-        protected override async Task _Invoke(MessageContext context)
+        protected override Task _Invoke(MessageContext context)
         {
             int oldVal = _val;
             string[] splitMessage = Regex.Split(context.MessageEvent.Message.Content, @"[\s+]");
 
             _val += (splitMessage.Length > 1 && int.TryParse(splitMessage[1], out var inc)) ? inc : 1;
-            await context.Reply("Old val: " + oldVal + ", new val: " + _val).ConfigureAwait(false);
+            return context.Reply("Old val: " + oldVal + ", new val: " + _val);
         }
     }
 }

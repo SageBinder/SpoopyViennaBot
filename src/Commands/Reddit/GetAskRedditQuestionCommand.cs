@@ -11,9 +11,9 @@ namespace SpoopyViennaBot.Commands.Reddit
         protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(Triggers);
 
-        protected override async Task _Invoke(MessageContext context)
+        protected override Task _Invoke(MessageContext context)
         {
-            await GetPostCommand._invoke(context, new[] { "AskReddit" }).ConfigureAwait(false);
+            return GetPostCommand._invoke(context, new[] { "AskReddit" });
         }
     }
 }

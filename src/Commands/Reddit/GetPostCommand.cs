@@ -16,10 +16,10 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         protected override bool IsTriggeredByMessage(MessageContext context) => context.SatisfiesTriggers(Triggers);
 
-        protected override async Task _Invoke(MessageContext context)
+        protected override Task _Invoke(MessageContext context)
         {
             var commandArgs = context.GetSequentialArgs(Triggers.Length);
-            await _invoke(context, commandArgs).ConfigureAwait(false);
+            return _invoke(context, commandArgs);
         }
 
         internal static async Task _invoke(MessageContext context, string[] args)

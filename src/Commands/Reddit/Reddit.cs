@@ -52,12 +52,12 @@ namespace SpoopyViennaBot.Commands.Reddit
         internal static async Task<RedditAPI> EstablishApiIfNecessaryAndGet(int timeout = DefaultTimeout) =>
             ApiIsEstablished() ? Api : await EstablishApiAndGet(timeout).ConfigureAwait(false);
 
-        internal static async Task<bool> EstablishApi(int timeout = DefaultTimeout)
+        internal static Task<bool> EstablishApi(int timeout = DefaultTimeout)
         {
-            if(_establishingApiFlag) return await _establishApiTask.ConfigureAwait(false);
+            if(_establishingApiFlag) return _establishApiTask;
 
             _establishApiTask = _EstablishApi(timeout);
-            return await _establishApiTask.ConfigureAwait(false);
+            return _establishApiTask;
         }
 
         private static async Task<bool> _EstablishApi(int timeout = DefaultTimeout)
