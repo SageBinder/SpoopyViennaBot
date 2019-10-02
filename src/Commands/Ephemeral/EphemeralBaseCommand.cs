@@ -13,7 +13,7 @@ namespace SpoopyViennaBot.Commands.Ephemeral
         
         internal EphemeralBaseCommand(EphemeralContext ephemeralContext)
         {
-            this.EphemeralContext = ephemeralContext;
+            EphemeralContext = ephemeralContext;
         }
 
         protected override bool IsTriggeredByMessage(MessageContext context) =>
