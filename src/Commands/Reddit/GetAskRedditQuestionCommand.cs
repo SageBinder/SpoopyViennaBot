@@ -13,7 +13,7 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         protected override async Task _Invoke(MessageContext context)
         {
-            await GetPostCommand._invoke(context, new[] {"AskReddit"});
+            await GetPostCommand._invoke(context, new[] { "AskReddit" }).ConfigureAwait(false);
         }
     }
 }

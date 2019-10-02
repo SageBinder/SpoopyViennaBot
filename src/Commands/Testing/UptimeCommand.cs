@@ -17,11 +17,11 @@ namespace SpoopyViennaBot.Commands.Testing
         protected override async Task _Invoke(MessageContext context)
         {
             var uptimeTimeSpan = DateTime.UtcNow - _startDate;
-            await context.Reply($"{uptimeTimeSpan.Days} days, " + 
+            await context.Reply($"{uptimeTimeSpan.Days} days, " +
                                 $"{uptimeTimeSpan.Hours} hours, " +
                                 $"{uptimeTimeSpan.Minutes} minutes, " +
                                 $"{uptimeTimeSpan.Seconds} seconds " +
-                                $"(since {_startDate:yyyy-MM-dd hh:mm:ss}Z)");
+                                $"(since {_startDate:yyyy-MM-dd hh:mm:ss}Z)").ConfigureAwait(false);
         }
     }
 }

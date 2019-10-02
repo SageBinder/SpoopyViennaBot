@@ -28,11 +28,11 @@ namespace SpoopyViennaBot.Commands.Ephemeral
             {
                 if(EphemeralData.ContainsId(id))
                 {
-                    await context.Reply($"This channel is ephemeral; delay is {EphemeralData.Get(id)} seconds.");
+                    await context.Reply($"This channel is ephemeral; delay is {EphemeralData.Get(id)} seconds.").ConfigureAwait(false);
                 }
                 else
                 {
-                    await context.Reply("This channel is not ephemeral.");
+                    await context.Reply("This channel is not ephemeral.").ConfigureAwait(false);
                 }
             }
             catch(Exception e)

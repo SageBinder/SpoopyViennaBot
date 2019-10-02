@@ -34,22 +34,22 @@ namespace SpoopyViennaBot.Commands.Ephemeral
             {
                 if(wasEphemeral)
                 {
-                    reply = await context.Reply($"Updated this channel's ephemeral delay, now {deleteDelay} seconds.");
+                    reply = await context.Reply($"Updated this channel's ephemeral delay, now {deleteDelay} seconds.").ConfigureAwait(false);
                 }
                 else
                 {
-                    reply = await context.Reply($"This channel is now ephemeral, delay is {deleteDelay} seconds.");
+                    reply = await context.Reply($"This channel is now ephemeral, delay is {deleteDelay} seconds.").ConfigureAwait(false);
                 }
             }
             else
             {
                 if(wasEphemeral)
                 {
-                    reply = await context.Reply(":x: Error: could not update this channel's ephemeral delay.");
+                    reply = await context.Reply(":x: Error: could not update this channel's ephemeral delay.").ConfigureAwait(false);
                 }
                 else
                 {
-                    reply = await context.Reply(":x: Error: could not mark this channel as ephemeral.");
+                    reply = await context.Reply(":x: Error: could not mark this channel as ephemeral.").ConfigureAwait(false);
                 }
             }
 

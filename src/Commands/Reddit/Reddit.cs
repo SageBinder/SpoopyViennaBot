@@ -45,19 +45,19 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         internal static async Task<RedditAPI> EstablishApiAndGet(int timeout = DefaultTimeout)
         {
-            await EstablishApi(timeout);
+            await EstablishApi(timeout).ConfigureAwait(false);
             return Api;
         }
 
         internal static async Task<RedditAPI> EstablishApiIfNecessaryAndGet(int timeout = DefaultTimeout) =>
-            ApiIsEstablished() ? Api : await EstablishApiAndGet(timeout);
+            ApiIsEstablished() ? Api : await EstablishApiAndGet(timeout).ConfigureAwait(false);
 
         internal static async Task<bool> EstablishApi(int timeout = DefaultTimeout)
         {
-            if(_establishingApiFlag) return await _establishApiTask;
+            if(_establishingApiFlag) return await _establishApiTask.ConfigureAwait(false);
 
             _establishApiTask = _EstablishApi(timeout);
-            return await _establishApiTask;
+            return await _establishApiTask.ConfigureAwait(false);
         }
 
         private static async Task<bool> _EstablishApi(int timeout = DefaultTimeout)
@@ -81,7 +81,7 @@ namespace SpoopyViennaBot.Commands.Reddit
             restRequest.AddParameter("username", redditUsername);
             restRequest.AddParameter("password", redditPassword);
 
-            IRestResponse restResponse = await restClient.ExecutePostTaskAsync(restRequest);
+            IRestResponse restResponse = await restClient.ExecutePostTaskAsync(restRequest).ConfigureAwait(false);
 
             string accessToken;
             try

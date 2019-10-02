@@ -12,7 +12,7 @@ namespace SpoopyViennaBot.Commands.Reddit
             context.SatisfiesTriggers(new[] {BaseTrigger}, canTakeArguments: false);
 
         protected override async Task _Invoke(MessageContext context) =>
-            await context.Reply("Error: no reddit command specified. (TODO: Write a better error message for this lol)");
+            await context.Reply("Error: no reddit command specified. (TODO: Write a better error message for this lol)").ConfigureAwait(false);
 
         public static async Task<RedditAPI> EstablishApiIfNecessaryAndGet(MessageContext context,
             int timeout = Reddit.DefaultTimeout,
@@ -20,14 +20,14 @@ namespace SpoopyViennaBot.Commands.Reddit
         {
             if(!displayMessages)
             {
-                return await Reddit.EstablishApiIfNecessaryAndGet(timeout);
+                return await Reddit.EstablishApiIfNecessaryAndGet(timeout).ConfigureAwait(false);
             }
             
             RedditAPI reddit;
             if(!Reddit.ApiIsEstablished())
             {
-                await context.Reply("It appears the connection to the Reddit API has failed... Attempting to reestablish");
-                reddit = await Reddit.EstablishApiAndGet(timeout);
+                await context.Reply("It appears the connection to the Reddit API has failed... Attempting to reestablish").ConfigureAwait(false);
+                reddit = await Reddit.EstablishApiAndGet(timeout).ConfigureAwait(false);
             }
             else
             {
@@ -36,7 +36,7 @@ namespace SpoopyViennaBot.Commands.Reddit
 
             if(reddit == null)
             {
-                await context.Reply("Error: a connection to the Reddit API could not be established.");
+                await context.Reply("Error: a connection to the Reddit API could not be established.").ConfigureAwait(false);
             }
 
             return reddit;
