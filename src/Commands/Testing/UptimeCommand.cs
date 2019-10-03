@@ -14,10 +14,10 @@ namespace SpoopyViennaBot.Commands.Testing
         protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(new[] {Trigger}, canTakeArguments: false);
 
-        protected override async Task _Invoke(MessageContext context)
+        protected override Task _Invoke(MessageContext context)
         {
             var uptimeTimeSpan = DateTime.UtcNow - _startDate;
-            await context.Reply($"{uptimeTimeSpan.Days} days, " + 
+            return context.Reply($"{uptimeTimeSpan.Days} days, " +
                                 $"{uptimeTimeSpan.Hours} hours, " +
                                 $"{uptimeTimeSpan.Minutes} minutes, " +
                                 $"{uptimeTimeSpan.Seconds} seconds " +

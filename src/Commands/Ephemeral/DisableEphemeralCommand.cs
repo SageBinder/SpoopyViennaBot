@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Transactions;
 using DSharpPlus.Entities;
 using SpoopyViennaBot.Utils.CommandsMeta;
 
@@ -22,7 +21,7 @@ namespace SpoopyViennaBot.Commands.Ephemeral
             var channelId = context.MessageEvent.Channel.Id;
             if(!EphemeralData.ContainsId(channelId))
             {
-                await context.Reply("This channel is already non-ephemeral");
+                await context.Reply("This channel is already non-ephemeral").ConfigureAwait(false);
                 return;
             }
          
@@ -31,11 +30,11 @@ namespace SpoopyViennaBot.Commands.Ephemeral
             
             if(EphemeralData.Remove(channelId))
             {
-                reply = await context.Reply("This channel is no longer ephemeral.");
+                reply = await context.Reply("This channel is no longer ephemeral.").ConfigureAwait(false);
             }
             else
             {
-                reply = await context.Reply(":x: Error: could not mark this channel as non-ephemeral.");
+                reply = await context.Reply(":x: Error: could not mark this channel as non-ephemeral.").ConfigureAwait(false);
             }
 
             EphemeralContext.NoDeleteMessageIdSet.Add(messageId);

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpoopyViennaBot.Utils.CommandsMeta
 {
@@ -10,7 +8,7 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
 
         public async Task Invoke(MessageContext context)
         {
-            if(IsTriggeredByMessage(context)) await _Invoke(context);
+            if(IsTriggeredByMessage(context)) await _Invoke(context).ConfigureAwait(false);
         }
 
         protected abstract Task _Invoke(MessageContext context);

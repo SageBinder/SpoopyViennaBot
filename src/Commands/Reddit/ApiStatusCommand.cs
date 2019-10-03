@@ -14,19 +14,19 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         protected override async Task _Invoke(MessageContext context)
         {
-            DiscordMessage checkingMessage = await context.Reply("Checking reddit API connection status...");
+            DiscordMessage checkingMessage = await context.Reply("Checking reddit API connection status...").ConfigureAwait(false);
             
             bool apiIsEstablished = Reddit.ApiIsEstablished();
             if(apiIsEstablished)
             {
-                await context.Reply(":white_check_mark: The connection to the Reddit API appears to be working");
+                await context.Reply(":white_check_mark: The connection to the Reddit API appears to be working").ConfigureAwait(false);
             }
             else
             {
-                await context.Reply(":x: Error: It appears the connection to the Reddit API is not working");
+                await context.Reply(":x: Error: It appears the connection to the Reddit API is not working").ConfigureAwait(false);
             }
 
-            await checkingMessage.DeleteAsync();
+            await checkingMessage.DeleteAsync().ConfigureAwait(false);
         }
     }
 }

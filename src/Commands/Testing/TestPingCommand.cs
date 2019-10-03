@@ -9,6 +9,6 @@ namespace SpoopyViennaBot.Commands.Testing
         protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.MessageEvent.MentionedUsers.Contains(context.BotClient.CurrentUser);
 
-        protected override async Task _Invoke(MessageContext context) => await context.Reply("Hello!");
+        protected override async Task _Invoke(MessageContext context) => await context.Reply("Hello!").ConfigureAwait(false);
     }
 }

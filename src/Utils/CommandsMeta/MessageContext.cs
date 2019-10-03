@@ -21,7 +21,7 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
             MessageEvent = messageEvent;
         }
         
-        public async Task<DiscordMessage> Reply(string message) => await MessageEvent.Channel.SendMessageAsync(message);
+        public async Task<DiscordMessage> Reply(string message) => await MessageEvent.Channel.SendMessageAsync(message).ConfigureAwait(false);
 
         public bool SatisfiesTriggers(string[] triggers,
             string delimRegex = @"\s+",

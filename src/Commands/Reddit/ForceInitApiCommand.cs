@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SpoopyViennaBot.Utils.CommandsMeta;
 
@@ -23,10 +22,10 @@ namespace SpoopyViennaBot.Commands.Reddit
             }
 
             initialMessage += $"timeout={timeout}ms...";
-            await context.Reply(initialMessage);
+            await context.Reply(initialMessage).ConfigureAwait(false);
             await context.Reply(await Reddit.EstablishApi(timeout)
-                ? "Reddit API successfully established!"
-                : "Error: could not establish Reddit API.");
+.ConfigureAwait(false) ? "Reddit API successfully established!"
+                : "Error: could not establish Reddit API.").ConfigureAwait(false);
         }
     }
 }

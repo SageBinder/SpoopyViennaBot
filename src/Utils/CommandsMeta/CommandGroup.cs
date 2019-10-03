@@ -9,6 +9,6 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
         protected readonly List<Command> Commands = new List<Command>();
 
         public async Task Invoke(MessageContext context) =>
-            await Task.WhenAll(Commands.Select(command => command.Invoke(context)).ToList());
+            await Task.WhenAll(Commands.Select(command => command.Invoke(context)).ToList()).ConfigureAwait(false);
     }
 }

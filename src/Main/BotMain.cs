@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using SpoopyViennaBot.Utils;
@@ -32,14 +29,14 @@ namespace SpoopyViennaBot.Main
                 TokenType = TokenType.Bot
             });
 
-            _botClient.MessageCreated += async e => await _invokables.Propagate(new MessageContext(_botClient, e));
+            _botClient.MessageCreated += async e => await _invokables.Propagate(new MessageContext(_botClient, e)).ConfigureAwait(false);
 
-            await _botClient.ConnectAsync();
+            await _botClient.ConnectAsync().ConfigureAwait(false);
             
             Console.WriteLine("\n\nHewwo mastew UwU");
             Console.WriteLine("I'm weady fow input");
-            
-            await Task.Delay(-1);
+
+            await Task.Delay(-1).ConfigureAwait(false);
         }
     }
 }

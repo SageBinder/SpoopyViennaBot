@@ -20,7 +20,7 @@ namespace SpoopyViennaBot.Commands.Random
 
             if(numTosses == 1)
             {
-                await context.Reply($"```diff\n{(Random.Next(2) == 0 ? "- Heads" : "+ Tails")}```");
+                await context.Reply($"```diff\n{(Random.Next(2) == 0 ? "- Heads" : "+ Tails")}```").ConfigureAwait(false);
                 return;
             }
             
@@ -43,7 +43,7 @@ namespace SpoopyViennaBot.Commands.Random
             outputString += $"\n+ Total tails: {numTosses - totalHeads}";
             outputString += $"\n- Total heads: {totalHeads}";
             outputString += "```";
-            await context.Reply(outputString);
+            await context.Reply(outputString).ConfigureAwait(false);
         }
     }
 }

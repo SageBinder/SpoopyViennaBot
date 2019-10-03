@@ -14,6 +14,6 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
         }
 
         public async Task Propagate(MessageContext context) =>
-            await Task.WhenAll(_commands.Select(command => command.Invoke(context)).ToList());
+            await Task.WhenAll(_commands.Select(command => command.Invoke(context)).ToList()).ConfigureAwait(false);
     }
 }

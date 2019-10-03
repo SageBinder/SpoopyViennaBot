@@ -16,22 +16,22 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         protected override bool IsTriggeredByMessage(MessageContext context) => context.SatisfiesTriggers(Triggers);
 
-        protected override async Task _Invoke(MessageContext context)
+        protected override Task _Invoke(MessageContext context)
         {
             var commandArgs = context.GetSequentialArgs(Triggers.Length);
-            await _invoke(context, commandArgs);
+            return _invoke(context, commandArgs);
         }
 
         internal static async Task _invoke(MessageContext context, string[] args)
         {
             if(args.Length == 0)
             {
-                await context.Reply($"Error: no arguments provided. Usage: `{Triggers[0]} {Triggers[1]} <subreddit> [feed_type]`");
+                await context.Reply($"Error: no arguments provided. Usage: `{Triggers[0]} {Triggers[1]} <subreddit> [feed_type]`").ConfigureAwait(false);
                 return;
             }
 
             RedditAPI reddit;
-            if((reddit = await RedditBaseCommand.EstablishApiIfNecessaryAndGet(context)) == null) return;
+            if((reddit = await RedditBaseCommand.EstablishApiIfNecessaryAndGet(context).ConfigureAwait(false)) == null) return;
 
             var subredditName = args[0];
             Subreddit subreddit;
@@ -42,7 +42,7 @@ namespace SpoopyViennaBot.Commands.Reddit
             catch(Exception)
             {
                 await context.Reply(
-                    $"Error: couldn't access the subreddit *r/{subredditName}*. Are you sure it exists?");
+                    $"Error: couldn't access the subreddit *r/{subredditName}*. Are you sure it exists?").ConfigureAwait(false);
                 return;
             }
 
@@ -73,7 +73,7 @@ namespace SpoopyViennaBot.Commands.Reddit
                 $"r/{subreddit.Name}: *\"{latestPost.Title}\"*\n" +
                 $"({latestPost.UpVotes} upvote{(latestPost.UpVotes != 1 ? "s" : "")}, " +
                 $"{latestPost.DownVotes} downvote{(latestPost.DownVotes != 1 ? "s" : "")})\n" +
-                $"{latestPost.Listing.URL}");
+                $"{latestPost.Listing.URL}").ConfigureAwait(false);
         }
     }
 }

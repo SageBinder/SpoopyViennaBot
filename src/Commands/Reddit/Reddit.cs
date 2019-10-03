@@ -45,19 +45,19 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         internal static async Task<RedditAPI> EstablishApiAndGet(int timeout = DefaultTimeout)
         {
-            await EstablishApi(timeout);
+            await EstablishApi(timeout).ConfigureAwait(false);
             return Api;
         }
 
         internal static async Task<RedditAPI> EstablishApiIfNecessaryAndGet(int timeout = DefaultTimeout) =>
-            ApiIsEstablished() ? Api : await EstablishApiAndGet(timeout);
+            ApiIsEstablished() ? Api : await EstablishApiAndGet(timeout).ConfigureAwait(false);
 
-        internal static async Task<bool> EstablishApi(int timeout = DefaultTimeout)
+        internal static Task<bool> EstablishApi(int timeout = DefaultTimeout)
         {
-            if(_establishingApiFlag) return await _establishApiTask;
+            if(_establishingApiFlag) return _establishApiTask;
 
             _establishApiTask = _EstablishApi(timeout);
-            return await _establishApiTask;
+            return _establishApiTask;
         }
 
         private static async Task<bool> _EstablishApi(int timeout = DefaultTimeout)
@@ -65,10 +65,10 @@ namespace SpoopyViennaBot.Commands.Reddit
             _establishingApiFlag = true;
             Console.WriteLine($"\nObtaining access token from reddit (timeout={timeout}ms)... ({DateTime.UtcNow})");
 
-            var redditUsername = File.ReadAllText("../../../src/Resources/reddit_username.txt");
-            var redditPassword = File.ReadAllText("../../../src/Resources/reddit_password.txt");
-            var appSecret = File.ReadAllText("../../../src/Resources/reddit_secret.txt");
-            var appId = File.ReadAllText("../../../src/Resources/reddit_app_id.txt");
+            var redditUsername = await File.ReadAllTextAsync("../../../src/Resources/reddit_username.txt").ConfigureAwait(false);
+            var redditPassword = await File.ReadAllTextAsync("../../../src/Resources/reddit_password.txt").ConfigureAwait(false);
+            var appSecret = await File.ReadAllTextAsync("../../../src/Resources/reddit_secret.txt").ConfigureAwait(false);
+            var appId = await File.ReadAllTextAsync("../../../src/Resources/reddit_app_id.txt").ConfigureAwait(false);
 
             var restClient = new RestClient("https://www.reddit.com")
             {
@@ -81,7 +81,7 @@ namespace SpoopyViennaBot.Commands.Reddit
             restRequest.AddParameter("username", redditUsername);
             restRequest.AddParameter("password", redditPassword);
 
-            IRestResponse restResponse = await restClient.ExecutePostTaskAsync(restRequest);
+            IRestResponse restResponse = await restClient.ExecutePostTaskAsync(restRequest).ConfigureAwait(false);
 
             string accessToken;
             try

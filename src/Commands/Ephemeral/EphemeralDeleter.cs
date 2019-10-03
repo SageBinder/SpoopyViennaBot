@@ -29,7 +29,7 @@ namespace SpoopyViennaBot.Commands.Ephemeral
             var channelId = context.MessageEvent.Channel.Id;
             if(EphemeralData.Get(channelId) == 0)
             {
-                await context.MessageEvent.Message.DeleteAsync();
+                await context.MessageEvent.Message.DeleteAsync().ConfigureAwait(false);
                 return;
             }
             

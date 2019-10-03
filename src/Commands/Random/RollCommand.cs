@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SpoopyViennaBot.Utils.CommandsMeta;
 
@@ -27,7 +26,7 @@ Usage examples:
             var args = context.GetSequentialArgs(1);
             if(args.Length == 0)
             {
-                await context.Reply(UsageString);
+                await context.Reply(UsageString).ConfigureAwait(false);
                 return;
             }
             
@@ -62,7 +61,7 @@ Usage examples:
                 messageString += $"\nTotal: {totalRoll}";
             }
             messageString += "```";
-            await context.Reply(messageString);
+            await context.Reply(messageString).ConfigureAwait(false);
         }
 
         private static bool TryParseRollArg(string arg, out RollArg output)
