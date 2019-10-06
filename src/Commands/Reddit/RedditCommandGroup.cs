@@ -6,11 +6,19 @@ namespace SpoopyViennaBot.Commands.Reddit
     {
         public RedditCommandGroup()
         {
-            Commands.Add(new RedditBaseCommand());
-            Commands.Add(new GetPostCommand());
-            Commands.Add(new GetAskRedditQuestionCommand());
-            Commands.Add(new ForceInitRedditApiCommand());
-            Commands.Add(new RedditApiStatusCommand());
+            var context = new RedditContext();
+            var getCommand = new GetPostCommand(context);
+
+            Commands.Add(new RedditBaseCommand(context));
+            Commands.Add(getCommand);
+            Commands.Add(new GetAskRedditQuestionCommand(context));
+            Commands.Add(new ForceInitRedditApiCommand(context));
+            Commands.Add(new RedditApiStatusCommand(context));
+            Commands.Add(new NextCommand(context));
+            Commands.Add(new PreviousCommand(context));
+            Commands.Add(new FeedCommand(context));
+            
+            context.GetCommand = getCommand;
         }
     }
 }

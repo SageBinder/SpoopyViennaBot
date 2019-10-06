@@ -20,7 +20,7 @@ namespace SpoopyViennaBot.Commands.Ephemeral
                 {
                     using(var mapStream = Resources.OpenResourceRead(MapResourceFileName))
                     {
-                        _ephemeralMap = (Dictionary<ulong, int>)(new BinaryFormatter().Deserialize(mapStream));
+                        _ephemeralMap = (Dictionary<ulong, int>)new BinaryFormatter().Deserialize(mapStream);
                     }
                 }
                 catch(Exception e)

@@ -4,10 +4,14 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    internal class ForceInitRedditApiCommand : Command
+    internal class ForceInitRedditApiCommand : RedditBaseCommand
     {
         internal const string Trigger = "forceinit";
-        internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
+        internal static readonly string[] Triggers = {BaseTrigger, Trigger};
+
+        internal ForceInitRedditApiCommand(RedditContext commandContext) : base(commandContext)
+        {
+        }
 
         protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(Triggers, canTakeArguments: false);
@@ -23,8 +27,8 @@ namespace SpoopyViennaBot.Commands.Reddit
 
             initialMessage += $"timeout={timeout}ms...";
             await context.Reply(initialMessage).ConfigureAwait(false);
-            await context.Reply(await Reddit.EstablishApi(timeout)
-.ConfigureAwait(false) ? "Reddit API successfully established!"
+            await context.Reply(await Reddit.EstablishApi(timeout).ConfigureAwait(false)
+                ? "Reddit API successfully established!"
                 : "Error: could not establish Reddit API.").ConfigureAwait(false);
         }
     }

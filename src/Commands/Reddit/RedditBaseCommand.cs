@@ -4,10 +4,17 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    internal class RedditBaseCommand : Command
+    public class RedditBaseCommand : Command
     {
         internal const string BaseTrigger = "!reddit";
 
+        internal readonly RedditContext CommandContext;
+        
+        internal RedditBaseCommand(RedditContext commandContext)
+        {
+            CommandContext = commandContext;
+        }
+        
         protected override bool IsTriggeredByMessage(MessageContext context) =>
             context.SatisfiesTriggers(new[] {BaseTrigger}, canTakeArguments: false);
 

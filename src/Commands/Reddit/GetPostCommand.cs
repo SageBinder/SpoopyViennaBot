@@ -9,10 +9,15 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    internal class GetPostCommand : Command
+    // TODO: Update this to use the feed-based reddit commands
+    internal class GetPostCommand : RedditBaseCommand
     {
         internal const string Trigger = "get";
-        internal static readonly string[] Triggers = {RedditBaseCommand.BaseTrigger, Trigger};
+        internal static readonly string[] Triggers = {BaseTrigger, Trigger};
+
+        internal GetPostCommand(RedditContext commandContext) : base(commandContext)
+        {
+        }
 
         protected override bool IsTriggeredByMessage(MessageContext context) => context.SatisfiesTriggers(Triggers);
 
@@ -22,7 +27,8 @@ namespace SpoopyViennaBot.Commands.Reddit
             return _invoke(context, commandArgs);
         }
 
-        internal static async Task _invoke(MessageContext context, string[] args)
+        // Fuck, this is retarded. I don't know how it happened. Whatever, I don't care right now
+        internal async Task _invoke(MessageContext context, string[] args)
         {
             if(args.Length == 0)
             {
@@ -30,10 +36,37 @@ namespace SpoopyViennaBot.Commands.Reddit
                 return;
             }
 
-            RedditAPI reddit;
-            if((reddit = await RedditBaseCommand.EstablishApiIfNecessaryAndGet(context).ConfigureAwait(false)) == null) return;
-
             var subredditName = args[0];
+
+            var count = 1;
+            if(args.Length >= 2 && int.TryParse(args[1], out count))
+            {
+                if(count > 5) count = 5;
+                await ReplyWithPosts(context, subredditName, "hot", count);
+            }
+            else
+            {
+                var feedType = "hot";
+                if(args.Length >= 2)
+                {
+                    feedType = args[1];
+                }
+
+                if(args.Length >= 3)
+                {
+                    count = int.TryParse(args[2], out count) ? count : 1;
+                }
+
+                if(count > 5) count = 5;
+
+                await ReplyWithPosts(context, subredditName, feedType, count);
+            }
+        }
+
+        private async Task ReplyWithPosts(MessageContext context, string subredditName, string feedType, int count)
+        {
+            RedditAPI reddit;
+            if((reddit = await EstablishApiIfNecessaryAndGet(context).ConfigureAwait(false)) == null) return;
             Subreddit subreddit;
             try
             {
@@ -42,38 +75,36 @@ namespace SpoopyViennaBot.Commands.Reddit
             catch(Exception)
             {
                 await context.Reply(
-                    $"Error: couldn't access the subreddit *r/{subredditName}*. Are you sure it exists?").ConfigureAwait(false);
+                    $"Error: couldn't access the subreddit *r/{subredditName}*. Are you sure it exists?")
+                    .ConfigureAwait(false);
                 return;
             }
 
-            Post latestPost;
-            var feedType = "top";
-            if(args.Length >= 2)
+            for(var i = 0; i < count; i++)
             {
-                feedType = args[1];
+                Post post;
+                if(char.ToLower(feedType[0]) == 'b')
+                    post = subreddit.Posts.GetBest(new CategorizedSrListingInput()).SkipWhile(p => CommandContext.SeenPosts.Contains(p.Id)).First();
+                else if(char.ToLower(feedType[0]) == 'h')
+                    post = subreddit.Posts.GetHot(new ListingsHotInput()).SkipWhile(p => CommandContext.SeenPosts.Contains(p.Id)).First();
+                else if(char.ToLower(feedType[0]) == 'n')
+                    post = subreddit.Posts.GetNew(new CategorizedSrListingInput()).SkipWhile(p => CommandContext.SeenPosts.Contains(p.Id)).First();
+                else if(char.ToLower(feedType[0]) == 'r')
+                    post = subreddit.Posts.GetRising(new CategorizedSrListingInput()).SkipWhile(p => CommandContext.SeenPosts.Contains(p.Id)).First();
+                else if(char.ToLower(feedType[0]) == 'c')
+                    post = subreddit.Posts.GetControversial(new TimedCatSrListingInput()).SkipWhile(p => CommandContext.SeenPosts.Contains(p.Id)).First();
+                else if(char.ToLower(feedType[0]) == 't')
+                    post = subreddit.Posts.GetTop().SkipWhile(p => CommandContext.SeenPosts.Contains(p.Id)).First();
+                else
+                    post = subreddit.Posts.GetHot(new ListingsHotInput()).SkipWhile(p => CommandContext.SeenPosts.Contains(p.Id)).First();
+
+                CommandContext.SeenPosts.Add(post.Id);
+            
+                await context.Reply(
+                        $"**(+{post.UpVotes}) r/{post.Subreddit}/{feedType}:** *\"{post.Title}\"*\n" +
+                        $"{post.Listing.URL}")
+                    .ConfigureAwait(false);
             }
-
-            // TODO: Extract this into a method when it needs to be reused
-            if(char.ToLower(feedType[0]) == 'b')
-                latestPost = subreddit.Posts.GetBest(new CategorizedSrListingInput(count: 1)).First();
-            else if(char.ToLower(feedType[0]) == 'h')
-                latestPost = subreddit.Posts.GetHot(new ListingsHotInput(count: 1)).First();
-            else if(char.ToLower(feedType[0]) == 'n')
-                latestPost = subreddit.Posts.GetNew(new CategorizedSrListingInput(count: 1)).First();
-            else if(char.ToLower(feedType[0]) == 'r')
-                latestPost = subreddit.Posts.GetRising(new CategorizedSrListingInput(count: 1)).First();
-            else if(char.ToLower(feedType[0]) == 'c')
-                latestPost = subreddit.Posts.GetControversial(new TimedCatSrListingInput(count: 1)).First();
-            else if(char.ToLower(feedType[0]) == 't')
-                latestPost = subreddit.Posts.GetTop().First();
-            else
-                latestPost = subreddit.Posts.GetNew(new CategorizedSrListingInput(count: 1)).First();
-
-            await context.Reply(
-                $"r/{subreddit.Name}: *\"{latestPost.Title}\"*\n" +
-                $"({latestPost.UpVotes} upvote{(latestPost.UpVotes != 1 ? "s" : "")}, " +
-                $"{latestPost.DownVotes} downvote{(latestPost.DownVotes != 1 ? "s" : "")})\n" +
-                $"{latestPost.Listing.URL}").ConfigureAwait(false);
         }
     }
 }

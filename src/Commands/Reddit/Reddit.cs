@@ -12,7 +12,7 @@ namespace SpoopyViennaBot.Commands.Reddit
     {
         internal const int DefaultTimeout = 5000;
 
-        public static RedditAPI Api { get; private set; }
+        internal static RedditAPI Api { get; private set; }
 
         private const string UserAgent = "SpoopyViennaBot Reddit Access by u/SaggiSponge";
 
