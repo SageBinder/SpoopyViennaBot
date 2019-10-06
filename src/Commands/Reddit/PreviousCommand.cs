@@ -17,6 +17,14 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         protected override async Task _Invoke(MessageContext context)
         {
+            if(CommandContext.CurrentFeed == null)
+            {
+                await context.Reply(
+                        "Error: no Reddit feed currently specified. Run `!reddit feed [subreddit_name]/[sorting]` to specify a feed.")
+                    .ConfigureAwait(false);
+                return;
+            }
+            
             RedditAPI reddit;
             if((reddit = await EstablishApiIfNecessaryAndGet(context).ConfigureAwait(false)) == null) return;
             
