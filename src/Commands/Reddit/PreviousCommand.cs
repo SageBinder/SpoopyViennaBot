@@ -25,14 +25,22 @@ namespace SpoopyViennaBot.Commands.Reddit
                 return;
             }
             
+            var args = context.GetSequentialArgs(Triggers.Length);
+            var countString = args.Length > 0 ? args[0] : "1";
+            int count = int.TryParse(countString, out count) ? count : 1;
+            if(count > MaxPostsPerInvoke) count = MaxPostsPerInvoke;
+            
             RedditAPI reddit;
             if((reddit = await EstablishApiIfNecessaryAndGet(context).ConfigureAwait(false)) == null) return;
-            
-            var post = CommandContext.CurrentFeed.Previous(reddit);
-            await context.Reply(
-                    $"**(+{post.UpVotes}) r/{post.Subreddit}/{CommandContext.CurrentFeed.Properties.Type:G}:** *\"{post.Title}\"*\n" +
-                    $"{post.Listing.URL}")
-                .ConfigureAwait(false);
+
+            for(var i = 0; i < count; i++)
+            {
+                var post = CommandContext.CurrentFeed.Previous(reddit);
+                await context.Reply(
+                        $"**(+{post.UpVotes}) r/{post.Subreddit}/{CommandContext.CurrentFeed.Properties.Type:G}:** *\"{post.Title}\"*\n" +
+                        $"{post.Listing.URL}")
+                    .ConfigureAwait(false);
+            }
         }
     }
 }

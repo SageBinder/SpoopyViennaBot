@@ -11,6 +11,8 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
             if(IsTriggeredByMessage(context)) await _Invoke(context).ConfigureAwait(false);
         }
 
+        public async Task ForceInvoke(MessageContext context) => await _Invoke(context).ConfigureAwait(false);
+
         protected abstract Task _Invoke(MessageContext context);
     }
 }

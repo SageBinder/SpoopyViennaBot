@@ -5,16 +5,16 @@ namespace SpoopyViennaBot.Commands.Reddit
     internal class RedditContext
     {
         internal GetPostCommand GetCommand;
+        internal NextCommand NextCommand;
+        internal PreviousCommand PreviousCommand;
         internal readonly HashSet<string> SeenPosts = new HashSet<string>();
         
         private readonly Dictionary<RedditFeed.FeedProperties, RedditFeed> _feeds = new Dictionary<RedditFeed.FeedProperties, RedditFeed>();
 
         internal RedditFeed CurrentFeed { get; private set; }
 
-        internal void SetCurrentFeed(string subredditName, RedditFeed.FeedType type)
-        {
+        internal void SetCurrentFeed(string subredditName, RedditFeed.FeedType type) =>
             SetCurrentFeed(new RedditFeed.FeedProperties(subredditName, type));
-        }
 
         internal void SetCurrentFeed(RedditFeed.FeedProperties properties)
         {
@@ -28,5 +28,7 @@ namespace SpoopyViennaBot.Commands.Reddit
                 _feeds.Add(properties, CurrentFeed);
             }
         }
+        
+        internal void ResetCurrentFeed() => CurrentFeed = null;
     }
 }

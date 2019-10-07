@@ -26,12 +26,18 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
         public bool SatisfiesTriggers(string[] triggers,
             string delimRegex = @"\s+",
             bool caseSensitive = false,
+            bool matchWithRegex = false,
             bool canTakeArguments = true)
         {
-            string[] splitMessage = Regex.Split(caseSensitive ? MessageString : MessageString.ToLower(), delimRegex);
-            if(splitMessage.Length < triggers.Length || (!canTakeArguments && splitMessage.Length > triggers.Length))
+            var splitMessage = Regex.Split(caseSensitive ? MessageString : MessageString.ToLower(), delimRegex);
+            if(splitMessage.Length < triggers.Length || !canTakeArguments && splitMessage.Length > triggers.Length)
             {
                 return false;
+            }
+
+            if(matchWithRegex)
+            {
+                return !triggers.Where((word, i) => !Regex.Match(caseSensitive ? word : word.ToLower(), splitMessage[i]).Success).Any();
             }
 
             return !triggers.Where((word, i) => !(caseSensitive ? word : word.ToLower()).Equals(splitMessage[i])).Any();
@@ -40,7 +46,7 @@ namespace SpoopyViennaBot.Utils.CommandsMeta
         public string[] GetSequentialArgs(int numTriggers = 0, string delimRegex = @"\s+")
         {
             var splitString = Regex.Split(MessageString, delimRegex);
-            return splitString.Skip(numTriggers).TakeWhile(_ => true).ToArray();
+            return splitString.Skip(numTriggers).ToArray();
         }
     }
 }

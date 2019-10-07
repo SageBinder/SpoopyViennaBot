@@ -4,12 +4,13 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    public class RedditBaseCommand : Command
+    internal class RedditBaseCommand : Command
     {
         internal const string BaseTrigger = "!reddit";
+        internal const int MaxPostsPerInvoke = 10;
 
         internal readonly RedditContext CommandContext;
-        
+
         internal RedditBaseCommand(RedditContext commandContext)
         {
             CommandContext = commandContext;

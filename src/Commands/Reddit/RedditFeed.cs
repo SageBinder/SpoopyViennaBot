@@ -12,7 +12,7 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         // Stores posts using their Fullname property, which is unique fore each post across Reddit.
         private readonly List<string> _seenPosts = new List<string>();
-        internal int PostIndex { get; private set; }
+        internal int PostIndex { get; private set; } = -1;
         internal int FeedCount => _seenPosts.Count;
 
         internal RedditFeed(FeedProperties properties)
@@ -66,6 +66,25 @@ namespace SpoopyViennaBot.Commands.Reddit
         }
 
         public override string ToString() => Properties.ToString();
+        
+        public static FeedType GetFeedTypeFromChar(char c)
+        {
+            switch(char.ToLower(c))
+            {
+                case 'h':
+                    return FeedType.Hot;
+                case 'n':
+                    return FeedType.New;
+                case 'r':
+                    return FeedType.Rising;
+                case 'c':
+                    return FeedType.Controversial;
+                case 't':
+                    return FeedType.Top;
+                default:
+                    return FeedType.Hot;
+            }
+        }
 
         internal enum FeedType
         {

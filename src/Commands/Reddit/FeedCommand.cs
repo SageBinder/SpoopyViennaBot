@@ -20,7 +20,7 @@ namespace SpoopyViennaBot.Commands.Reddit
             var feedArg = string.Join("/", context.GetSequentialArgs(Triggers.Length));
             if(feedArg.Length == 0)
             {
-                await context.Reply($"Current feed: {CommandContext.CurrentFeed}")
+                await context.Reply($"Current feed: {(CommandContext.CurrentFeed != null ? CommandContext.CurrentFeed.ToString() : "(no feed)")}")
                     .ConfigureAwait(false);
                 return;
             }
@@ -28,30 +28,8 @@ namespace SpoopyViennaBot.Commands.Reddit
             var feedArgMatch = Regex.Match(feedArg, @"([a-zA-Z0-9_]+)(?:[\s|/\\]+([a-zA-Z]+))?");
             var subredditName = feedArgMatch.Groups[1].ToString();
             var feedTypeString = feedArgMatch.Groups[2].ToString().Trim().Length > 0 ? feedArgMatch.Groups[2].ToString() : "hot";
-            RedditFeed.FeedType feedType;
-            
-            switch(char.ToLower(feedTypeString[0]))
-            {
-                case 'h':
-                    feedType = RedditFeed.FeedType.Hot;
-                    break;
-                case 'n':
-                    feedType = RedditFeed.FeedType.New;
-                    break;
-                case 'r':
-                    feedType = RedditFeed.FeedType.Rising;
-                    break;
-                case 'c':
-                    feedType = RedditFeed.FeedType.Controversial;
-                    break;
-                case 't':
-                    feedType = RedditFeed.FeedType.Top;
-                    break;
-                default:
-                    feedType = RedditFeed.FeedType.Hot;
-                    break;
-            }
-            
+            var feedType = RedditFeed.GetFeedTypeFromChar(feedTypeString[0]);
+
             CommandContext.SetCurrentFeed(subredditName, feedType);
             await context.Reply($"Set Reddit feed to {CommandContext.CurrentFeed}")
                 .ConfigureAwait(false);
