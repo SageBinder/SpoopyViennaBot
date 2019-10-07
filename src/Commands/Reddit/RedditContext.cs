@@ -7,8 +7,7 @@ namespace SpoopyViennaBot.Commands.Reddit
         internal GetPostCommand GetCommand;
         internal NextCommand NextCommand;
         internal PreviousCommand PreviousCommand;
-        internal readonly HashSet<string> SeenPosts = new HashSet<string>();
-        
+
         private readonly Dictionary<RedditFeed.FeedProperties, RedditFeed> _feeds = new Dictionary<RedditFeed.FeedProperties, RedditFeed>();
 
         internal RedditFeed CurrentFeed { get; private set; }
