@@ -38,11 +38,8 @@ namespace SpoopyViennaBot.Commands.Reddit
             return reddit.GetPosts(new List<string> {_seenPosts[PostIndex]}).First();
         }
 
-        internal void ResetPostIndex()
-        {
-            PostIndex = _seenPosts.Count - 1;
-        }
-        
+        internal void ResetPostIndex() => PostIndex = _seenPosts.Count - 1;
+
         private static Subreddit GetSubreddit(RedditAPI reddit, string subredditName) =>
             reddit.Subreddit(subredditName).About();
 

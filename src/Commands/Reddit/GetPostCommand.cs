@@ -30,6 +30,8 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         internal async Task ReplyWithPosts(MessageContext context, string[] args)
         {
+            // TODO: allow `!reddit get [subreddit] [count]` without specifying a feed type. Also, this would be better
+            //  done with regexes anyways.
             var subredditName = args[0];
             var feedTypeString = args.Length > 1 ? args[1] : "hot";
             int count = int.TryParse(args.Length > 2 ? args[2] : "1", out count) ? count : 1;
