@@ -4,7 +4,6 @@ using SpoopyViennaBot.Utils.CommandsMeta;
 
 namespace SpoopyViennaBot.Commands.Reddit
 {
-    // TODO: Update this to use the feed-based reddit commands
     internal class GetPostCommand : RedditBaseCommand
     {
         internal const string Trigger = "get";
@@ -30,15 +29,23 @@ namespace SpoopyViennaBot.Commands.Reddit
 
         internal async Task ReplyWithPosts(MessageContext context, string[] args)
         {
-            // TODO: allow `!reddit get [subreddit] [count]` without specifying a feed type. Also, this would be better
-            //  done with regexes anyways.
             var subredditName = args[0];
-            var feedTypeString = args.Length > 1 ? args[1] : "hot";
-            int count = int.TryParse(args.Length > 2 ? args[2] : "1", out count) ? count : 1;
+            string feedType;
+            
+            if(args.Length > 1 && int.TryParse(args[1], out var count))
+            {
+                feedType = "hot";
+            }
+            else
+            {
+                feedType = args.Length > 1 ? args[1] : "hot";
+                count = int.TryParse(args.Length > 2 ? args[2] : "1", out count) ? count : 1;
+            }
+            
             if(count > MaxPostsPerInvoke) count = MaxPostsPerInvoke;
 
             var oldFeed = CommandContext.CurrentFeed;
-            CommandContext.SetCurrentFeed(subredditName, RedditFeed.GetFeedTypeFromChar(feedTypeString[0]));
+            CommandContext.SetCurrentFeed(subredditName, RedditFeed.GetFeedTypeFromChar(feedType[0]));
 
             await CommandContext.NextCommand.ReplyWithPosts(context, new[] {count.ToString()});
 
