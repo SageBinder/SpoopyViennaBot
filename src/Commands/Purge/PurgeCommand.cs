@@ -21,7 +21,7 @@ namespace SpoopyViennaBot.Commands.Purge
             var args = context.GetSequentialArgs(1);
             if(!(args.Length > 0 && int.TryParse(args[0], out var purgeCount)))
             {
-                await context.Reply("Usage: `!purge <num_messages_to_purge>`");
+                await context.Reply("Usage: `!purge <num_messages_to_purge>`").ConfigureAwait(false);
                 return;
             }
 
@@ -29,18 +29,18 @@ namespace SpoopyViennaBot.Commands.Purge
 
             try
             {
-                await context.MessageEvent.Message.DeleteAsync();
+                await context.MessageEvent.Message.DeleteAsync().ConfigureAwait(false);
                 for(var i = 0; i < purgeCount; i++)
                 {
                     var messages =
                         await context.MessageEvent.Channel.GetMessagesAsync(1,
-                            context.MessageEvent.Message.Id);
-                    await context.MessageEvent.Channel.DeleteMessagesAsync(messages);
+                            context.MessageEvent.Message.Id).ConfigureAwait(false);
+                    await context.MessageEvent.Channel.DeleteMessagesAsync(messages).ConfigureAwait(false);
                 }
             }
             catch(Exception)
             {
-                await context.Reply("Error: couldn't purge messages.");
+                await context.Reply("Error: couldn't purge messages.").ConfigureAwait(false);
             }
         }
     }
